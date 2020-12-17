@@ -20,11 +20,9 @@ exports.detectNewMessage = functions.firestore
         // Notification details.
         let payload = {
             data: {
-                type: 0
-            },
-            notification: {
-                android_channel_id: 'App Notifications',
-                body: `${message['message']}`,
+                type: '0'
+            }, notification: {
+                android_channel_id: 'App Notifications', body: `${message['message']}`,
             }
         };
         /**
@@ -53,9 +51,8 @@ exports.detectNewFollowers = functions.firestore
     .document('followers/{follower_id}')
     .onUpdate((change, context) => {
         let payload = {
-            notification: {
-                title: 'New user',
-                android_channel_id: 'App Notifications'
+            data: {}, notification: {
+                title: 'New user', android_channel_id: 'App Notifications'
             }
         };
         let prevCollection = change.before.data();
@@ -95,13 +92,13 @@ exports.detectNewFollowers = functions.firestore
                                 return follower.userId === newSubscriber.userId;
                             })
                             if (isMatched) {
-                                payload.data['type'] = 2;
+                                payload.data['type'] = '2';
                                 payload.notification.body = `${newSubscriber['name']} matched you`
                                 if (user['matchPush']) {
                                     return admin.messaging().sendToDevice(userToken, payload);
                                 }
                             } else {
-                                payload.data['type'] = 1;
+                                payload.data['type'] = '1';
                                 payload.notification.body = `${newSubscriber['name']} followed you`
                                 if (user['followingPush']) {
                                     return admin.messaging().sendToDevice(userToken, payload);
